@@ -15,6 +15,16 @@ class KRAZYKART_API AGoKart : public APawn
 
 	void MoveForward(float Val);
 
+	// The mass of the car in kg
+	UPROPERTY(EditAnywhere)
+	float Mass = 1000;
+
+	// Force applied to the car when the throttle is fully down N
+	UPROPERTY(EditAnywhere)
+	float MaxForce = 10000;
+
+	float Throttle;
+
 
 public:
 	// Sets default values for this pawn's properties
@@ -31,4 +41,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	/** Handle pressing forwards */
+
 };

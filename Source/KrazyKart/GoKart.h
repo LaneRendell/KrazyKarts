@@ -14,6 +14,7 @@ class KRAZYKART_API AGoKart : public APawn
 	FVector Velocity;
 
 	void MoveForward(float Val);
+	void MoveRight(float Value);
 
 	// The mass of the car in kg
 	UPROPERTY(EditAnywhere)
@@ -23,7 +24,22 @@ class KRAZYKART_API AGoKart : public APawn
 	UPROPERTY(EditAnywhere)
 	float MaxForce = 10000;
 
+	// Number of degrees rotated per second at full control throw degrees/s
+	UPROPERTY(EditAnywhere)
+	float MaxDegreesPerSecond = 90;
+
 	float Throttle;
+	float SteeringThrow;
+
+	void MoveCar(float DeltaTime);
+
+	void RotateCar(float DeltaTime);
+
+	// Higher means more drag
+	UPROPERTY(EditAnywhere)
+	float dragCoeff = 16;
+
+	FVector GetResistance();
 
 
 public:

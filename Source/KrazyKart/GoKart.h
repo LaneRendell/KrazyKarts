@@ -24,9 +24,9 @@ class KRAZYKART_API AGoKart : public APawn
 	UPROPERTY(EditAnywhere)
 	float MaxForce = 10000;
 
-	// Number of degrees rotated per second at full control throw degrees/s
+	// In meters
 	UPROPERTY(EditAnywhere)
-	float MaxDegreesPerSecond = 90;
+	float MinimumTurningRadius = 10;
 
 	float Throttle;
 	float SteeringThrow;
@@ -37,9 +37,15 @@ class KRAZYKART_API AGoKart : public APawn
 
 	// Higher means more drag
 	UPROPERTY(EditAnywhere)
-	float dragCoeff = 16;
+	float DragCoeff = 16;
 
-	FVector GetResistance();
+
+	UPROPERTY(EditAnywhere)
+	float RollingCoef = 0.022f;
+
+	FVector GetAirResistance();
+
+	FVector GetRollingResistance();
 
 
 public:

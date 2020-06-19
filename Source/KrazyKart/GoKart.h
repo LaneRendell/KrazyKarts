@@ -13,7 +13,19 @@ class KRAZYKART_API AGoKart : public APawn
 
 	FVector Velocity;
 
+	UPROPERTY(ReplicatedUsing=OnRep_ReplicatedTransform)
+	FTransform ReplicatedTransform;
+
+	UFUNCTION()
+	void OnRep_ReplicatedTransform();
+
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveForward(float Val);
 	void MoveForward(float Val);
+	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveRight(float Value);
 	void MoveRight(float Value);
 
 	// The mass of the car in kg
@@ -47,6 +59,7 @@ class KRAZYKART_API AGoKart : public APawn
 
 	FVector GetRollingResistance();
 
+	//FString GetEnumText(ENetRole Role);
 
 public:
 	// Sets default values for this pawn's properties

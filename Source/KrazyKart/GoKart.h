@@ -6,26 +6,67 @@
 #include "GameFramework/Pawn.h"
 #include "GoKart.generated.h"
 
+USTRUCT()
+struct FGoKartMove
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	float Throttle;
+
+	UPROPERTY()
+	float SteeringThrow;
+
+	UPROPERTY()
+	float DeltaTime;
+
+	UPROPERTY()
+	float Time;
+};
+
+USTRUCT()
+struct FGoKartState
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	FTransform Transform;
+
+	UPROPERTY()
+	FVector Velocity;
+
+	UPROPERTY()
+	FGoKartMove LastMove;
+};
+
 UCLASS()
 class KRAZYKART_API AGoKart : public APawn
 {
 	GENERATED_BODY()
 
+	UPROPERTY(ReplicatedUsing=OnRep_ServerState)
+	FGoKartState ServerState;
+
 	FVector Velocity;
 
-	UPROPERTY(ReplicatedUsing=OnRep_ReplicatedTransform)
-	FTransform ReplicatedTransform;
-
 	UFUNCTION()
-	void OnRep_ReplicatedTransform();
+	void OnRep_ServerState();
+	void MoveCar(float DeltaTime);
 
+	void RotateCar(float DeltaTime, float Steer);
+
+	float Throttle;
+	float SteeringThrow;
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveForward(float Val);
+	void Server_SendMove(FGoKartMove Move);
+
+	void SimulateMove(FGoKartMove Move);
+	FGoKartMove CreateMove(float DeltaTime);
+
+	void ClearAcknowledgedMoves(FGoKartMove LastMove);
+
 	void MoveForward(float Val);
-	
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveRight(float Value);
 	void MoveRight(float Value);
 
 	// The mass of the car in kg
@@ -40,13 +81,6 @@ class KRAZYKART_API AGoKart : public APawn
 	UPROPERTY(EditAnywhere)
 	float MinimumTurningRadius = 10;
 
-	float Throttle;
-	float SteeringThrow;
-
-	void MoveCar(float DeltaTime);
-
-	void RotateCar(float DeltaTime);
-
 	// Higher means more drag
 	UPROPERTY(EditAnywhere)
 	float DragCoeff = 16;
@@ -59,7 +93,7 @@ class KRAZYKART_API AGoKart : public APawn
 
 	FVector GetRollingResistance();
 
-	//FString GetEnumText(ENetRole Role);
+	TArray<FGoKartMove> PendingMoves;
 
 public:
 	// Sets default values for this pawn's properties
